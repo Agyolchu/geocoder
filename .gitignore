@@ -2,3 +2,4 @@
 # User-specific stuff
 .idea/
 venv/
+services/__pycache__/
