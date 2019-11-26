@@ -1,0 +1,6 @@
+CoordinateRequestParams:
+              - latitude
+              - longitude
+
+AddressRequestParams:
+              - address
