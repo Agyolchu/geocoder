@@ -3,3 +3,8 @@
 .idea/
 venv/
 app/services/__pycache__/
+*.pyc
+*.pyman
+*.pyo
+__pycache__
+
