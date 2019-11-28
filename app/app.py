@@ -8,11 +8,11 @@ app = Flask(__name__)
 geo_locator_service = GeoLocatorService()
 
 
-@app.route('/api/address', methods=['POST', 'GET'])
+@app.route('/api/address/', methods=['GET'])
 @CoordinateDecorator.validate_address_request
 def to_coordinate_route():
     try:
-        address = request.get_json().get('address')
+        address = request.args.get('address')
         coordinates, code = geo_locator_service.convert_address_to_coordinates(address)
         return {"data": coordinates}, code
 
@@ -23,12 +23,12 @@ def to_coordinate_route():
         return {"data": repr(e)}, 500
 
 
-@app.route('/api/coordinates', methods=['POST', 'GET'])
+@app.route('/api/coordinates/', methods=['GET'])
 @CoordinateDecorator.validate_coordinate_request
 def to_address_route():
     try:
-        latitude = request.get_json().get('latitude')
-        longitude = request.get_json().get('longitude')
+        latitude = request.args.get('latitude')
+        longitude = request.args.get('longitude')
         address, code = geo_locator_service.convert_coordinates_to_address(latitude, longitude)
         return {'data': str(address)}, 200
 

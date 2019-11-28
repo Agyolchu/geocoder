@@ -10,7 +10,7 @@ class CoordinateDecorator:
     def validate_coordinate_request(func):
         @wraps(func)
         def wrapped_func(*args, **kwargs):
-            params = request.get_json()
+            params = request.args
             keys = params.keys()
             if not list(keys) == CoordinateDecorator.config.storage.get('CoordinateRequestParams'):
                 return {"message": "please pass only two parameters latitude and longitude with number parameters"}, 500
@@ -22,7 +22,7 @@ class CoordinateDecorator:
     def validate_address_request(func):
         @wraps(func)
         def wrapped_f(*args, **kwargs):
-            params = request.get_json()
+            params = request.args
             keys = params.keys()
             if not list(keys) == CoordinateDecorator.config.storage.get('AddressRequestParams'):
                 return {"message": "please pass only single parameters address"}, 500

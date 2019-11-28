@@ -4,3 +4,9 @@ CoordinateRequestParams:
 
 AddressRequestParams:
               - address
+
+RedisUrl:     redis://redis:6379/0
+
+# This is not secure, but better than storing directly string
+BrokerUrl:    amqp://admin:admin@rabbit//
+

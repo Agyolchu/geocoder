@@ -2,6 +2,7 @@ import yaml
 
 
 class Config:
+
     @property
     def storage(self) -> dict:
         yml_file = open('etc/config.yml')
