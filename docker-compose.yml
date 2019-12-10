@@ -10,8 +10,8 @@ services:
     hostname: rabbit
     image: rabbitmq:latest
     environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=admin
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "admin"
 
   webservice:
     build:
@@ -22,7 +22,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - "5000:5000"
+      - "1989:1989"
     links:
       - rabbit
       - redis

@@ -1,12 +1,16 @@
-CoordinateRequestParams:
-              - latitude
-              - longitude
+COORDINATE_REQUEST_PARAMS:
+                      - latitude
+                      - longitude
 
-AddressRequestParams:
-              - address
+ADDRESS_REQUEST_PARAMS:
+                      - address
 
-RedisUrl:     redis://redis:6379/0
+REDIS_URL:            redis://redis:6379/0
 
-# This is not secure, but better than storing directly string
-BrokerUrl:    amqp://admin:admin@rabbit//
+CELERY_BROKER_URL:    amqp://admin:admin@rabbit//
+
+
+HOST:                 0.0.0.0
+
+PORT:                 1989
 

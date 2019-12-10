@@ -1,8 +1,12 @@
+from time import sleep
+
 from geopy import Nominatim
 from libs.exceptions.geo_exception import GeoException
 from libs.utilites.type_checker import isfloat
-from libs.clients.celery_client import CELERY
+from tasks.addresser_task import AddresserTask
+from app_settings import celery
 from numbers import Integral
+
 
 
 class GeoLocatorService(object):
@@ -10,22 +14,23 @@ class GeoLocatorService(object):
     def __init__(self):
         self.locator = Nominatim(user_agent="geocoder_app")
 
-    # @CELERY.task()
-    def convert_address_to_coordinates(self, address: str) -> (dict, int):
+    @staticmethod
+    def convert_address_to_coordinates(address: str) -> dict:
         if not address:
             raise GeoException("Address must be passed")
-        coordinate_data = self.locator.geocode(address)
-        if not coordinate_data:
-            return {"error": "Not proper address"}, 400
-        _, (latitude, longitude) = self.locator.geocode(address)
-        return {"latitude": latitude, "longitude": longitude}, 200
+        address_task = AddresserTask()
+        coordinates_data = address_task.delay(address)
+        if not coordinates_data.get():
+            return {"error": "Not proper address"}
+        _, (latitude, longitude) = coordinates_data
+        return {"latitude": latitude, "longitude": longitude}
 
-    # @CELERY.task()
-    def convert_coordinates_to_address(self, *args) -> (str, int):
+    @celery.task(bind=True, name='GeoLocatorService.convert_coordinates_to_address')
+    def convert_coordinates_to_address(self, *args) -> dict:
         if not (all(isfloat(elem) for elem in args) or all(isinstance(elem, Integral) for elem in args)):
             raise GeoException("Latitude or Longitude data type is not correct, must be integer or integer convertible")
 
         address = self.locator.reverse("{}, {}".format(str(args[0]), str(args[1])))
         if not address:
-            return "Not proper coordinates", 400
-        return address, 200
+            return {"error": "Coordinates are not valid"}
+        return {"address": address}

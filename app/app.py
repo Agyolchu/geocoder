@@ -1,11 +1,15 @@
-from io import BytesIO
-from flask import Flask, request
+import time
+from app_settings import app
+from flask import request
 from services.geolocator_service import GeoLocatorService
 from libs.utilites.coordinator_decorator import CoordinateDecorator
 from libs.exceptions.geo_exception import GeoException
+from libs.utilites.config import Config
 
-app = Flask(__name__)
-geo_locator_service = GeoLocatorService()
+
+geo_locator = GeoLocatorService()
+
+config = Config()
 
 
 @app.route('/api/address/', methods=['GET'])
@@ -13,11 +17,13 @@ geo_locator_service = GeoLocatorService()
 def to_coordinate_route():
     try:
         address = request.args.get('address')
-        coordinates, code = geo_locator_service.convert_address_to_coordinates(address)
-        return {"data": coordinates}, code
+        coordinates_data = geo_locator.convert_address_to_coordinates(address)
+        if 'error' not in coordinates_data:
+            return {"data": coordinates_data}, 200
+        return coordinates_data, 404
 
     except GeoException as ge:
-        ge.to_dict()
+        ge.to_dict(), 500
 
     except Exception as e:
         return {"data": repr(e)}, 500
@@ -29,8 +35,11 @@ def to_address_route():
     try:
         latitude = request.args.get('latitude')
         longitude = request.args.get('longitude')
-        address, code = geo_locator_service.convert_coordinates_to_address(latitude, longitude)
-        return {'data': str(address)}, 200
+        address = geo_locator.convert_coordinates_to_address.delay(latitude, longitude)
+        if 'error' not in address:
+            return {'data': str(address)}, 200
+
+        return address, 404
 
     except GeoException as ge:
         return ge.to_dict()
@@ -40,4 +49,4 @@ def to_address_route():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=1989, host='0.0.0.0')
+    app.run(debug=True, host=config.storage.get('HOST'), port=config.storage.get('PORT'))
