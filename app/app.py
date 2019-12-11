@@ -35,7 +35,7 @@ def to_address_route():
     try:
         latitude = request.args.get('latitude')
         longitude = request.args.get('longitude')
-        address = geo_locator.convert_coordinates_to_address.delay(latitude, longitude)
+        address = geo_locator.convert_coordinates_to_address(latitude, longitude)
         if 'error' not in address:
             return {'data': str(address)}, 200
 
