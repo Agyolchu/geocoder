@@ -19,7 +19,7 @@ class GeoLocatorService(object):
         return {"latitude": latitude, "longitude": longitude}
 
     @staticmethod
-    def convert_coordinates_to_address(self, *args) -> dict:
+    def convert_coordinates_to_address(*args) -> dict:
         if not (all(isfloat(elem) for elem in args) or all(isinstance(elem, Integral) for elem in args)):
             raise GeoException("Latitude or Longitude data type is not correct, must be integer or integer convertible")
         coordinate_task = CordinateTask()

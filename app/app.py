@@ -42,10 +42,10 @@ def to_address_route():
         return address, 404
 
     except GeoException as ge:
-        return ge.to_dict()
+        return {"error": ge.to_dict()}
 
     except Exception as e:
-        return {"data": repr(e)}, 500
+        return {"error": repr(e)}, 500
 
 
 if __name__ == '__main__':

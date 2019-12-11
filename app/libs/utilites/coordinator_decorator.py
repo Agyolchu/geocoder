@@ -12,7 +12,8 @@ class CoordinateDecorator:
         def wrapped_func(*args, **kwargs):
             params = request.args
             keys = params.keys()
-            if not cls.config.storage.get('COORDINATE_REQUEST_PARAMS') in list(keys):
+            coordinate_parameters = cls.config.storage.get('COORDINATE_REQUEST_PARAMS')
+            if not all(item in coordinate_parameters for item in list(keys)):
                 return {"message": "please pass only two parameters latitude and longitude with number parameters"}, 500
             return func(*args, **kwargs)
 
