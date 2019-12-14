@@ -3,15 +3,20 @@ version: '3'
 services:
 
   redis:
-    image: redis:latest
+    image: rabbitmq:management
     hostname: redis
+    ports:
+      - "6379:6379"
 
   rabbit:
     hostname: rabbit
-    image: rabbitmq:latest
+    image: rabbitmq:management
     environment:
       RABBITMQ_DEFAULT_USER: "admin"
       RABBITMQ_DEFAULT_PASS: "admin"
+    ports:
+      - 5672:5672
+      - 15672:15672
 
   webservice:
     build:
@@ -22,7 +27,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - "1989:1989"
+      - 1989:1989
     links:
       - rabbit
       - redis
