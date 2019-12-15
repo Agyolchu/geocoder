@@ -3,14 +3,16 @@ version: '3'
 services:
 
   redis:
-    image: rabbitmq:management
+    image: redis:latest
     hostname: redis
     ports:
+      #- 6379:6379
       - "6379:6379"
 
   rabbit:
     hostname: rabbit
     image: rabbitmq:management
+    command: rabbitmq-server
     environment:
       RABBITMQ_DEFAULT_USER: "admin"
       RABBITMQ_DEFAULT_PASS: "admin"
@@ -33,6 +35,7 @@ services:
       - redis
 
   worker:
+    restart: on-failure
     build:
       context: .
       dockerfile: Dockerfile

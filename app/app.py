@@ -1,4 +1,3 @@
-import time
 from app_settings import app
 from flask import request
 from services.geolocator_service import GeoLocatorService
